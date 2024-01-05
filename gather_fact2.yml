@@ -28,6 +28,7 @@
           when: not ansible_check_mode
 
         - name: push to git
+          ignore_errors: false
           shell: "{{ item }}"
           args: 
             chdir: /tmp
@@ -35,11 +36,10 @@
             - git config --global user.name "shezanhossain2"
             - git config --global user.email hossainmahmudshezan@gmail.com
             - git init
-            - git remote add origin https://{{token_key}}@github.com/{{user_name}}/fast3.git
             - git add *
-            - git branch -M main
-            - git commit -m "trying99"
-            - git push origin main
-
+            - git commit -m "{{inventory_hostname}}"
+            - git branch -M master
+            - git remote add origin https://{{token_key}}@github.com/{{user_name}}/fresh.git || true
+            - git push origin master
           delegate_to: localhost
           become: false
