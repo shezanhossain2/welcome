@@ -35,4 +35,5 @@
             - git remote add origin https://{{token_key}}@github.com/{{user_name}}/fast.git
             - git add *
             - git commit -m "trying"
+            - git branch -M main
             - git push origin main
