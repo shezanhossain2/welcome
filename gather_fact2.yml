@@ -1,24 +1,27 @@
 ---
-- name: Create, rename, and push a file to GitHub repo
-  hosts: localhost  # Assuming you're running this playbook on the local machinesdsd2323
-  gather_facts: no
-  become: false
+- name: Generate
+  hosts: sw
+  connection: network_cli
+  gather_facts: false
+  
+  collections:
+    - community.network
+
 
   tasks:
     - name: Create a file new3_file.txt and push to GitHub
       block:
-        - name: Create a file new3_file.txt
-          file:
-            path: /tmp/new3_file.txt
-            state: touch
-          when: not ansible_check_mode
+        - name: Show config
+          community.network.exos_command:
+            commands: show config
+          register: config
 
-        - name: Rename new3_file.txt to kotha_file2.txt
-          command: mv /tmp/new3_file.txt /tmp/kotha_file2.txt
-          args:
-            creates: /tmp/kotha_file2.txt
-          changed_when: false
-          when: not ansible_check_mode
+        - name: SAVE OUTPUT TO ./backups/
+          copy:
+            content: "{{ config.stdout[0] }}"
+            dest: "/tmp/{{ inventory_hostname }}.txt"
+          delegate_to: localhost
+          become: false
 
         - name: Add exception for /tmp directory in Git
           command: git config --global --add safe.directory /tmp
@@ -32,7 +35,10 @@
             - git config --global user.name "shezanhossain2"
             - git config --global user.email hossainmahmudshezan@gmail.com
             - git init
-       #     - git remote add origin https://{{token_key}}@github.com/{{user_name}}/fast.git
+            - git remote add origin https://{{token_key}}@github.com/{{user_name}}/fast2.git
             - git add .
             - git commit -m "trying99"
-            - git push 
+            - git push origin main
+
+          delegate_to: localhost
+          become: false
