@@ -29,10 +29,10 @@
           args: 
             chdir: /tmp
           loop: 
-            - git config --global user.name "shezanhossain"
-            - git config --global user.email shezan_hossain.mahmud@smail.th-koeln.de
+            - git config --global user.name "shezanhossain2"
+            - git config --global user.email hossainmahmudshezan@gmail.com
             - git init
-            - git remote set-url origin https://@github.com/shezanhossain2/fast.git
+            - git remote set-url origin https://{{token_key}}@github.com/{{user_name}}/fast.git
             - git add *
-            - git commit -m "try3"
-            - git push origin master
+            - git commit -m "trying"
+            - git push origin main
