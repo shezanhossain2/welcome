@@ -28,7 +28,7 @@
           when: not ansible_check_mode
 
         - name: push to git
-          ignore_errors: false
+          ignore_errors: true
           shell: "{{ item }}"
           args: 
             chdir: /tmp
@@ -39,7 +39,7 @@
             - git add *
             - git commit -m "{{inventory_hostname}}"
             - git branch -M master
-            - git remote add origin https://{{token_key}}@github.com/{{user_name}}/fresh.git || true
+            - git remote add origin https://{{token_key}}@github.com/{{user_name}}/fresh.git
             - git push origin master
           delegate_to: localhost
           become: false
