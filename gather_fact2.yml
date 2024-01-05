@@ -36,7 +36,8 @@
             - git config --global user.email hossainmahmudshezan@gmail.com
             - git init
             - git remote add origin https://{{token_key}}@github.com/{{user_name}}/fast2.git
-            - git add .
+            - git add *
+            - git branch -M main
             - git commit -m "trying99"
             - git push origin main
 
