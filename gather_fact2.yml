@@ -1,0 +1,38 @@
+---
+- name: Create, rename, and push a file to GitHub repo
+  hosts: localhost  # Assuming you're running this playbook on the local machine
+  gather_facts: no
+  become: false
+
+  tasks:
+    - name: Create a file new3_file.txt and push to GitHub
+      block:
+        - name: Create a file new3_file.txt
+          file:
+            path: /tmp/new3_file.txt
+            state: touch
+          when: not ansible_check_mode
+
+        - name: Rename new3_file.txt to kotha_file2.txt
+          command: mv /tmp/new3_file.txt /tmp/kotha_file2.txt
+          args:
+            creates: /tmp/kotha_file2.txt
+          changed_when: false
+          when: not ansible_check_mode
+
+        - name: Add exception for /tmp directory in Git
+          command: git config --global --add safe.directory /tmp
+          when: not ansible_check_mode
+
+        - name: push to git
+          shell: "{{ item }}"
+          args: 
+            chdir: /tmp
+          loop: 
+            - git config --global user.name "shezanhossain"
+            - git config --global user.email shezan_hossain.mahmud@smail.th-koeln.de
+            - git init
+            - git remote set-url origin https://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@github.com/shezanhossain2/fast.git
+            - git add *
+            - git commit -m "try3"
+            - git push origin master
