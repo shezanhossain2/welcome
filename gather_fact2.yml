@@ -32,7 +32,7 @@
             - git config --global user.name "shezanhossain2"
             - git config --global user.email hossainmahmudshezan@gmail.com
             - git init
-            - git remote set-url origin https://{{token_key}}@github.com/{{user_name}}/fast.git
+            - git remote add origin https://{{token_key}}@github.com/{{user_name}}/fast.git
             - git add *
             - git commit -m "trying"
             - git push origin main
