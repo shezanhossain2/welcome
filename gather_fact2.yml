@@ -31,8 +31,8 @@
           loop: 
             - git config --global user.name "shezanhossain2"
             - git config --global user.email hossainmahmudshezan@gmail.com
-       #     - git init
+            - git init
        #     - git remote add origin https://{{token_key}}@github.com/{{user_name}}/fast.git
-            - git add *
+            - git add .
             - git commit -m "trying99"
-            - git push origin main
+            - git push 
