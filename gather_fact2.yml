@@ -1,6 +1,6 @@
 ---
 - name: Create, rename, and push a file to GitHub repo
-  hosts: localhost  # Assuming you're running this playbook on the local machine
+  hosts: localhost  # Assuming you're running this playbook on the local machinesdsd
   gather_facts: no
   become: false
 
