@@ -9,8 +9,7 @@
         headers:
           Content-Type: "application/json"
           Authorization: "Bearer {{ token_api }}"
-        validate_certs: no  # Change this to yes if your AWX instance has valid SSL certificates
-      register: job_details
+
 
     - name: Display extra_vars
       debug:
