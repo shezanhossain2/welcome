@@ -44,9 +44,7 @@
           delegate_to: localhost
 
         - name: Copy new3_file.txt to sw.txt
-          args: 
-            chdir: /tmp
-          command: cp /tmp/{{ inventory_hostname }}.txt /tmp/fresh/{{ inventory_hostname }}.txt
+          command: cp /tmp/{{ inventory_hostname }}.txt /tmp/fresh/
           changed_when: false
           when: not ansible_check_mode
           delegate_to: localhost
@@ -55,7 +53,7 @@
           ignore_errors: true
           shell: "{{ item }}"
           args: 
-            chdir: /tmp/fresh 
+            chdir: /tmp
           loop: 
             - git config --global user.name "shezanhossain2"
             - git config --global user.email hossainmahmudshezan@gmail.com
