@@ -36,15 +36,20 @@
           run_once: true
           delegate_to: localhost
 
+        - name: Get current date and time
+          command: date '+%Y_%m_%d@%H_%M_%S'
+          register: datetime_result
+          run_once: true
+
         - name: create directory
           file :
-            path: /tmp/fresh/fresh2
+            path: /tmp/fresh/{{ datetime_result.stdout }}
             state: directory
           run_once: true
           delegate_to: localhost
 
         - name: Copy new3_file.txt to sw.txt
-          command: cp /tmp/{{ inventory_hostname }}.txt /tmp/fresh/fresh2/
+          command: cp /tmp/{{ inventory_hostname }}.txt /tmp/fresh/{{ datetime_result.stdout }}/
           changed_when: false
           when: not ansible_check_mode
           delegate_to: localhost
@@ -75,3 +80,4 @@
             - git push origin master
           delegate_to: localhost
           become: false
+          run_once: true
