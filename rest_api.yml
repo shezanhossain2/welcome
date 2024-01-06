@@ -5,13 +5,15 @@
   tasks:
     - name: Get job details from AWX
       uri:
-        url: "http://127.0.0.1:30080/api/v2/jobs/344/"
+        url: "http://localhost:30080/api/v2/jobs/{{ job_id }}/"
         method: GET
+        user: "admin"
+        password: "1234"
         headers:
           Content-Type: "application/json"
-          Authorization: "Token {{ token_api }}"
-      register: results
+        validate_certs: no  # Change this to yes if your AWX instance has valid SSL certificates
+      register: job_details
 
     - name: Display extra_vars
       debug:
-        msg: results
+        var: job_details.json.extra_vars
