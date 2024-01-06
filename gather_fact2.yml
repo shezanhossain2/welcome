@@ -75,7 +75,7 @@
             - git config --global user.name "shezanhossain2"
             - git config --global user.email hossainmahmudshezan@gmail.com
             - git add *
-            - git commit -m "{{inventory_hostname}}"     
+            - git commit -m "{{ datetime_result.stdout }}"     
             - git remote set-url origin https://{{token_key}}@github.com/{{user_name}}/fresh
             - git push origin master
           delegate_to: localhost
