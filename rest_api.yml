@@ -9,7 +9,7 @@
         method: GET
         headers:
           Content-Type: "application/json"
-          Authorization: "token {{ token_api }}"
+          Authorization: "Token {{ token_api }}"
       register: results
 
     - name: Display extra_vars
