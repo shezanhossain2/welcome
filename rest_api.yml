@@ -1,16 +1,17 @@
+---
 - name: Retrieve extra_vars from AWX job
   hosts: localhost  # Or specify your target hosts here
   tasks:
-    - name: Get extra_vars from AWX job
+    - name: Get job details from AWX
       uri:
-        url: "http://localhost:30080/api/v2/jobs/{{ job_id }}/extra_vars/"
+        url: "http://localhost:30080/api/v2/jobs/{{ job_id }}/"
         method: GET
         headers:
           Content-Type: "application/json"
           Authorization: "Bearer {{ token_api }}"
         validate_certs: no  # Change this to yes if your AWX instance has valid SSL certificates
-      register: extra_vars_response
+      register: job_details
 
     - name: Display extra_vars
       debug:
-        var: extra_vars_response.json
+        var: job_details.json.extra_vars
