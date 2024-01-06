@@ -1,11 +1,11 @@
 ---
 - name: Retrieve extra_vars from AWX job
-  hosts: localhost  # Or specify your target hosts here
+  hosts: localhost  # Or specify your target hosts here2
   gather_facts: false
   tasks:
     - name: Get job details from AWX
       uri:
-        url: "http://localhost:30080/api/v2/jobs/344/"
+        url: "http://127.0.0.1:30080/api/v2/jobs/344/"
         method: GET
         headers:
           Content-Type: "application/json"
