@@ -27,19 +27,21 @@
           command: git config --global --add safe.directory /tmp
           when: not ansible_check_mode
           run_once: true
+          delegate_to: localhost
 
         - name: Clone the existing GitHub repository
-          git:
-            repo: https://github.com/username/repo.git
-            dest: /tmp/
-            clone: yes
+          args: 
+            chdir: /tmp
+          command: git clone https://github.com/shezanhossain2/fresh.git
           run_once: true
-          
+          delegate_to: localhost
+
         - name: create directory
           file :
             path: /tmp/fresh
             state: directory
           run_once: true
+          delegate_to: localhost
 
         - name: Copy new3_file.txt to sw.txt
           args: 
@@ -47,7 +49,7 @@
           command: cp /tmp/{{ inventory_hostname }}.txt /tmp/fresh/
           changed_when: false
           when: not ansible_check_mode
-
+          delegate_to: localhost
 
         - name: push to git
           ignore_errors: true
