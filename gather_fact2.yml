@@ -50,6 +50,7 @@
           delegate_to: localhost
 
         - name: git init and add origin 
+          ignore_errors: true
           shell: "{{ item }}"
           args: 
             chdir: /tmp/fresh
