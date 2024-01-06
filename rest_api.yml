@@ -5,13 +5,13 @@
   tasks:
     - name: Get job details from AWX
       uri:
-        url: http://localhost:30080/api/v2/jobs/344/
+        url: "http://localhost:30080/api/v2/jobs/344/"
         method: GET
         validate_certs: no
         return_content: true
         headers:
           Content-Type: "application/json"
-          Authorization: "Bearer {{ token_api }}"
+          Authorization: "Token {{ token_api }}"
         register: results
 
     - name: Display extra_vars
