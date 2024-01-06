@@ -3,7 +3,7 @@
   tasks:
     - name: Get extra_vars from AWX job
       uri:
-        url: "https://your-awx-instance/api/v2/jobs/{{ job_id }}/extra_vars/"
+        url: "http://localhost:30080/api/v2/jobs/{{ job_id }}/extra_vars/"
         method: GET
         headers:
           Content-Type: "application/json"
