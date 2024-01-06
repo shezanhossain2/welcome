@@ -38,13 +38,13 @@
 
         - name: create directory
           file :
-            path: /tmp/fresh2
+            path: /tmp/fresh/fresh2
             state: directory
           run_once: true
           delegate_to: localhost
 
         - name: Copy new3_file.txt to sw.txt
-          command: cp /tmp/{{ inventory_hostname }}.txt /tmp/fresh2/
+          command: cp /tmp/{{ inventory_hostname }}.txt /tmp/fresh/fresh2/
           changed_when: false
           when: not ansible_check_mode
           delegate_to: localhost
@@ -69,7 +69,6 @@
           loop: 
             - git config --global user.name "shezanhossain2"
             - git config --global user.email hossainmahmudshezan@gmail.com
-            - git init
             - git add *
             - git commit -m "{{inventory_hostname}}"     
             - git remote set-url origin https://{{token_key}}@github.com/{{user_name}}/fresh
