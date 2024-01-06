@@ -26,12 +26,34 @@
         - name: Add exception for /tmp directory in Git
           command: git config --global --add safe.directory /tmp
           when: not ansible_check_mode
+          run_once: true
+
+        - name: Clone the existing GitHub repository
+          git:
+            repo: https://github.com/username/repo.git
+            dest: /tmp/
+            clone: yes
+          run_once: true
+          
+        - name: create directory
+          file :
+            path: /tmp/fresh
+            state: directory
+          run_once: true
+
+        - name: Copy new3_file.txt to sw.txt
+          args: 
+            chdir: /tmp
+          command: cp /tmp/{{ inventory_hostname }}.txt /tmp/fresh/
+          changed_when: false
+          when: not ansible_check_mode
+
 
         - name: push to git
           ignore_errors: true
           shell: "{{ item }}"
           args: 
-            chdir: /tmp
+            chdir: /tmp/fresh 
           loop: 
             - git config --global user.name "shezanhossain2"
             - git config --global user.email hossainmahmudshezan@gmail.com
@@ -40,7 +62,6 @@
             - git commit -m "{{inventory_hostname}}"
             - git branch -M master
             - git remote add origin https://{{token_key}}@github.com/{{user_name}}/fresh.git 
-            - git pull origin master --rebase
             - git push origin master
           delegate_to: localhost
           become: false
