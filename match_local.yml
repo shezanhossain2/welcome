@@ -29,10 +29,11 @@
             - name: String Found
               ansible.builtin.lineinfile: 
                 path: "/tmp/{{ inventory_hostname }}.txt"
-                line: "create vlan \"IG\""
+                line: "create vlan {{ NAME_VLAN_1 }}"
                 state: present
               check_mode: true
               register: conf  
+              failed_when: (conf is changed) or (conf is failed)
 
             - name: Display debug message
               ansible.builtin.debug: 
