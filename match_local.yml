@@ -42,12 +42,13 @@
           block:
             - name: String Found
               ansible.builtin.lineinfile: 
-                path: "/tmp/Exos_config/{{ inventory_hostname }}.txt"
-                line: "create vlan \"IG\""
-                state: present
+              path: "{{ inventory_hostname }}.txt"
+              line: "create vlan \"IG\""
+              state: present
               check_mode: true
               register: conf  
-
+              args: 
+                chdir: /tmp/Backups_Exos
             - name: Display debug message
               ansible.builtin.debug: 
                 msg: "{{ conf }}"
