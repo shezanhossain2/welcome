@@ -1,0 +1,53 @@
+---
+- name: Generate
+  hosts: sw
+  connection: network_cli
+  gather_facts: false
+  
+  collections:
+    - community.network
+
+
+  tasks:
+    - name: Match config
+      block:
+        - name: Show config
+          community.network.exos_command:
+            commands: show config
+          register: config
+
+        - name: SAVE OUTPUT TO ./backups/
+          copy:
+            content: "{{ config.stdout[0] }}"
+            dest: "/tmp/{{ inventory_hostname }}.txt"
+          delegate_to: localhost
+          become: false
+
+
+        - name: create directory
+          file :
+            path: /tmp/Exos_config/
+            state: directory
+          run_once: true
+          delegate_to: localhost
+
+
+        - name: Copy file to directory Exos_config
+          command: cp /tmp/{{ inventory_hostname }}.txt /tmp/Exos_config/
+          changed_when: false
+          when: not ansible_check_mode
+          delegate_to: localhost
+              
+        - name: Create a file new3_file.txt and push to GitHub
+          block:
+            - name: String Found
+              ansible.builtin.lineinfile: 
+                path: "/tmp/Exos_config/{{ inventory_hostname }}.txt"
+                line: "create vlan \"IG\""
+                state: present
+              check_mode: true
+              register: conf  
+
+            - name: Display debug message
+              ansible.builtin.debug: 
+                msg: "{{ conf }}"
