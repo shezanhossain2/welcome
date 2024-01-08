@@ -23,32 +23,17 @@
           delegate_to: localhost
           become: false
 
-
-        - name: create directory
-          file :
-            path: /tmp/Exos_config/
-            state: directory
-          run_once: true
-          delegate_to: localhost
-
-
-        - name: Copy file to directory Exos_config
-          command: cp /tmp/{{ inventory_hostname }}.txt /tmp/Exos_config/
-          changed_when: false
-          when: not ansible_check_mode
-          delegate_to: localhost
               
         - name: Create a file new3_file.txt and push to GitHub
           block:
             - name: String Found
               ansible.builtin.lineinfile: 
-              path: "{{ inventory_hostname }}.txt"
-              line: "create vlan \"IG\""
-              state: present
+                path: "/tmp/{{ inventory_hostname }}.txt"
+                line: "create vlan \"IG\""
+                state: present
               check_mode: true
               register: conf  
-              args: 
-                chdir: /tmp/Backups_Exos
+
             - name: Display debug message
               ansible.builtin.debug: 
                 msg: "{{ conf }}"
