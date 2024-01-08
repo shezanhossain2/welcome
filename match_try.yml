@@ -8,13 +8,18 @@
     - community.network
 
   tasks:
-    - name: SET VLAN
-      vars:
-        vlan_items: "{{ range(1, num_vlans + 1) | map('string') | list }}"
+    - name: Create a file new3_file.txt and push to GitHub
       block:
-        - name: Create VLAN name 
-          community.network.exos_config: 
-            lines:  
-              - "create vlan {{ lookup('vars', 'VLAN_NAME_' + item) }}"
-          loop: "{{ vlan_items }}"
-#          ignore_errors: True
+        - name: Show config
+          community.network.exos_command:
+            commands: show config
+          register: current_config
+
+        - name: Check if 'create vlan IG' exists in the config
+          set_fact:
+            vlan_found: "{{ 'create vlan IG' in current_config.stdout }}"
+
+        - name: Fail the job if 'create vlan IG' is not found
+          fail:
+            msg: "VLAN IT not found in config"
+          when: not vlan_found
