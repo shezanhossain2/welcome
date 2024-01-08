@@ -25,10 +25,10 @@
 
         - name: String Found
           ansible.builtin.lineinfile: 
-            name: "/tmp/{{ inventory_hostname }}.txt"
-            line: "create vlan IG"
+            path: "/tmp/{{ inventory_hostname }}.txt"
+            line: "create vlan \"IG\""
             state: present
-          check_mode: true
           register: conf
-          failed_when: (conf is changed) or (conf is failer)
           delegate_to: localhost
+        - debug:
+            msg: "{{  conf.stdout }}"        
