@@ -14,6 +14,9 @@
           community.network.exos_command:
             commands: show config
           register: current_config
+        - name: Debug current config
+          debug:
+            var: current_config.stdout
 
         - name: Check if 'create vlan' exists in the config
           set_fact:
@@ -22,4 +25,6 @@
         - name: Fail the job if 'create vlan' is not found
           fail:
             msg: "VLAN IT not found in config"
-          when: not vlan_found
+          when: vlan_found | length == 0
+
+
