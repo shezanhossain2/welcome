@@ -15,11 +15,11 @@
             commands: show config
           register: current_config
 
-        - name: Check if 'create vlan IG' exists in the config
+        - name: Check if 'create vlan' exists in the config
           set_fact:
-            vlan_found: "{{ 'create vlan IG' in current_config.stdout }}"
+            vlan_found: "{{ 'create vlan' in current_config.stdout }}"
 
-        - name: Fail the job if 'create vlan IG' is not found
+        - name: Fail the job if 'create vlan' is not found
           fail:
             msg: "VLAN IT not found in config"
           when: not vlan_found
