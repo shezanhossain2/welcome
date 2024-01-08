@@ -10,6 +10,8 @@
 
   tasks:
     - name: Match config
+      vars:
+        vlan_items: "{{ range(1, num_vlans + 1) | map('string') | list }}"
       block:
         - name: Show config
           community.network.exos_command:
@@ -26,11 +28,12 @@
         - name: String Found
           ansible.builtin.lineinfile: 
             path: "/tmp/{{ inventory_hostname }}.txt"
-            line: "create vlan {{ NAME_VLAN_1 }}"
+            line: "create vlan {{VLAN_NAME_1}}"
             state: present
           check_mode: true
           register: conf  
           failed_when: (conf is changed) or (conf is failed)
+          loop: "{{ vlan_items }}"
 
         - name: Display debug message
           ansible.builtin.debug: 
