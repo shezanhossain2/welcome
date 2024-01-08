@@ -13,9 +13,8 @@
         vlan_items: "{{ range(1, num_vlans + 1) | map('string') | list }}"
       block:
         - name: Create VLAN name 
-          community.network.exos_config:
-            match: 
-              lines:  
-                - "create vlan {{ lookup('vars', 'VLAN_NAME_' + item) }}"
+          community.network.exos_config: 
+            lines:  
+              - "create vlan {{ lookup('vars', 'VLAN_NAME_' + item) }}"
           loop: "{{ vlan_items }}"
 #          ignore_errors: True
