@@ -7,24 +7,35 @@
   collections:
     - community.network
 
+
   tasks:
     - name: Create a file new3_file.txt and push to GitHub
       block:
         - name: Show config
           community.network.exos_command:
             commands: show config
-          register: current_config
-        - name: Debug current config
-          debug:
-            var: current_config.stdout
+          register: config
 
-        - name: Check if 'create vlan' exists in the config
-          set_fact:
-            vlan_found: "{{ 'create vlan' in current_config.stdout }}"
-
-        - name: Fail the job if 'create vlan' is not found
-          fail:
-            msg: "VLAN IT not found in config"
-          when: vlan_found | length == 0
+        - name: SAVE OUTPUT TO ./backups/
+          copy:
+            content: "{{ config.stdout[0] }}"
+            dest: "/tmp/{{ inventory_hostname }}.txt"
+          delegate_to: localhost
+          become: false
 
 
+        - name: Search for 'create vlan IG' in a text file
+          hosts: localhost
+          tasks:
+            - name: Check if 'create vlan IG' exists in the file
+              ansible.builtin.lineinfile:
+                path: "/tmp/{{ inventory_hostname }}.txt"  # Replace with your file path
+                regexp: "^create vlan IG$"
+                state: present
+              check_mode: true
+              register: vlan_check_result
+
+            - name: Notify if 'create vlan IG' is found
+              debug:
+                msg: "Line 'create vlan IG' found in the file."
+              when: vlan_check_result.matches
