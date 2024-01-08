@@ -23,19 +23,15 @@
           delegate_to: localhost
           become: false
 
+        - name: Check if 'create vlan IG' exists in the file
+          ansible.builtin.lineinfile:
+            path: "/tmp/{{ inventory_hostname }}.txt"  # Replace with your file path
+            regexp: "^create vlan IG$"
+            state: present
+          check_mode: true
+          register: vlan_check_result
 
-        - name: Search for 'create vlan IG' in a text file
-          hosts: localhost
-          tasks:
-            - name: Check if 'create vlan IG' exists in the file
-              ansible.builtin.lineinfile:
-                path: "/tmp/{{ inventory_hostname }}.txt"  # Replace with your file path
-                regexp: "^create vlan IG$"
-                state: present
-              check_mode: true
-              register: vlan_check_result
-
-            - name: Notify if 'create vlan IG' is found
-              debug:
-                msg: "Line 'create vlan IG' found in the file."
-              when: vlan_check_result.matches
+        - name: Notify if 'create vlan IG' is found
+          debug:
+            msg: "Line 'create vlan IG' found in the file."
+          when: vlan_check_result.matches
