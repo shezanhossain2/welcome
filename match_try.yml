@@ -23,14 +23,12 @@
           delegate_to: localhost
           become: false
 
-        - name: Check if 'create vlan IG' exists in the file
-          shell: "grep -q 'create vlan IG' /path/to/your/file.txt"
+        - name: String Found
+          ansible.builtin.lineinfile: 
+            name: "/tmp/{{ inventory_hostname }}.txt"
+            line: "create vlan IG"
+            state: present
           check_mode: true
-          register: vlan_check_result
-          ignore_errors: true  # Ignore errors if 'grep' doesn't find the line
-
-        - name: Notify if 'create vlan IG' is found
-          debug:
-            msg: "Line 'create vlan IG' found in the file."
-          when: vlan_check_result.rc == 0  # Check if 'grep' was successful (exit code 0)
-
+          register: conf
+          failed_when: (conf is changed) or (conf is failer)
+          delegate_to: localhost
