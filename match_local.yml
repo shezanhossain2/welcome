@@ -60,6 +60,8 @@
             - fail: 
                 msg: "{{inventory_hostname}}: no tag {{ lookup('vars', 'TAG_ID_' + item) }} is added to VLAN {{ lookup('vars', 'VLAN_NAME_' + item) }}"
 
-        - name: Validation of Port assignment with tagged or untagged
-          debug: 
-            msg: "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item) }} add ports {{ lookup('vars', 'PORT_NUM_' + item) }} {{ lookup('vars', 'TAGGED_' + item) }}"
+        - name: Validation of Port assignment with tagged or untagged              
+          block: 
+            - name: Validation of Port assignment with tagged or untagged
+              debug: 
+                msg: "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item) }} add ports {{ lookup('vars', 'PORT_NUM_' + item) }} {{ lookup('vars', 'TAGGED_' + item) }}
