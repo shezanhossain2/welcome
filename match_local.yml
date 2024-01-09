@@ -25,6 +25,10 @@
           delegate_to: localhost
           become: false
 
+        - name: Read contents of the file into a variable
+          ansible.builtin.shell: cat /tmp/{{ inventory_hostname }}.txt
+          register: file_contents
+
         - name: Validation of VLAN Name
           block: 
             - name: Validation of VLAN Name

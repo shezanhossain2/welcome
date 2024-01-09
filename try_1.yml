@@ -25,13 +25,22 @@
           delegate_to: localhost
           become: false
 
-        - name: Validate 'configure vlan IT add ports 2 tagged' line
-          ansible.builtin.lineinfile: 
-            path: "/tmp/{{ inventory_hostname }}.txt"
-            regexp: '^configure vlan IT add ports 2 tagged$'
-            state: present
-          check_mode: true
-          delegate_to: localhost
-          register: conf_line
-          failed_when: (conf_line is changed) or (conf_line is failed)
+        - name: Read contents of the file into a variable
+          ansible.builtin.shell: cat /tmp/{{ inventory_hostname }}.txt
+          register: file_contents
+
+        - name: Define list of expected VLAN port assignment lines
+          set_fact:
+            expected_lines:
+              - "configure vlan IT add ports 2 tagged"
+              - "configure vlan HR add ports 3 tagged"
+              # Add other expected lines here based on your VLAN items
+
+        - name: Assert all expected lines are in the file
+          ansible.builtin.assert:
+            that:
+              - item in file_contents.stdout_lines
+            fail_msg: "Line '{{ item }}' is missing in the file."
+          loop: "{{ expected_lines }}"
+
 
