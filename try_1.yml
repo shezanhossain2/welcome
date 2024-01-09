@@ -1,17 +1,40 @@
 ---
-- name: Generate VLAN
+- name: Generate
   hosts: sw
   connection: network_cli
   gather_facts: false
+  
+  collections:
+    - community.network
+
 
   tasks:
-    - name: Set VLANs
+    - name: Match config
       vars:
         vlan_items: "{{ range(1, num_vlans + 1) | map('string') | list }}"
       block:
-        - name: Add Ports to VLAN
-          debug:
-            msg: "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item)}} add ports {{lookup('vars', 'PORT_NUM_' + item)}} {{ lookup('vars', 'TAGGED_' + item) }}"
-          loop: "{{ vlan_items }}"
-          when: lookup('vars', 'PORT_NUM_' + item, default='') != ''
+        - name: Show config
+          community.network.exos_command:
+            commands: show config
+          register: config
 
+        - name: SAVE OUTPUT TO ./backups/
+          copy:
+            content: "{{ config.stdout[0] }}"
+            dest: "/tmp/{{ inventory_hostname }}.txt"
+          delegate_to: localhost
+          become: false
+
+
+        - name: Validation of Port assignment with tagged or untagged
+          block:
+            - name: Validation of Port assignment with tagged or untagged
+              ansible.builtin.lineinfile: 
+                path: "/tmp/{{ inventory_hostname }}.txt"
+                line: "configure vlan IT add ports 2 tagged"
+                state: present
+              check_mode: true
+              delegate_to: localhost
+              register: conf_port
+              failed_when: (conf_port is changed) or (conf_port is failed)
+              ignore_errors: true       

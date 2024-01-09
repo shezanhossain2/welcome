@@ -68,9 +68,9 @@
                 line: "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item)}} add ports {{lookup('vars', 'PORT_NUM_' + item)}} {{ lookup('vars', 'TAGGED_' + item) }}"
                 state: present
               check_mode: true
+              delegate_to: localhost
               register: conf_port
               failed_when: (conf_port is changed) or (conf_port is failed)
               loop: "{{ vlan_items }}"
-              delegate_to: localhost
               ignore_errors: true       
  
