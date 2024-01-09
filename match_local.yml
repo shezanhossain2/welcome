@@ -62,4 +62,4 @@
 
         - name: Validation of Port assignment with tagged or untagged
           debug: 
-            msg: configure vlan {{ lookup('vars', 'VLAN_NAME_' + item) }} add ports {{ lookup('vars', 'PORT_NUM_' + item) }} {{ lookup('vars', 'TAGGED_' + item) }}
+            msg: "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item) }} add ports {{ lookup('vars', 'PORT_NUM_' + item) }} {{ lookup('vars', 'TAGGED_' + item) }}"
