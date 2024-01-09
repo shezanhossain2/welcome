@@ -17,5 +17,12 @@
             replace: 
               lines: 
                 - "create vlan {{ lookup('vars', 'VLAN_NAME_' + item) }}"
-            loop: "{{ vlan_items }}"
-            ignore_errors: True
+          loop: "{{ vlan_items }}"
+          ignore_errors: True
+          register: check
+
+        - name: Debbug
+          ansible.builtin.debug: 
+            msg: 
+              - "Config is not compliant"
+          when: check.changed
