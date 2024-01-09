@@ -25,28 +25,55 @@
           delegate_to: localhost
           become: false
 
-        - name: Validation of VLAN Name 
-          ansible.builtin.lineinfile: 
-            path: "/tmp/{{ inventory_hostname }}.txt"
-            line: "create vlan \"{{ lookup('vars', 'VLAN_NAME_' + item) }}\""
-            state: present
-          check_mode: true
-          register: conf_name
-          failed_when: (conf_name is changed) or (conf_name is failed)
-          loop: "{{ vlan_items }}"
-          delegate_to: localhost
+        - name: Validation of VLAN Name
+          block: 
+            - name: Validation of VLAN Name
+              ansible.builtin.lineinfile: 
+                path: "/tmp/{{ inventory_hostname }}.txt"
+                line: "create vlan \"{{ lookup('vars', 'VLAN_NAME_' + item) }}\""
+                state: present
+              check_mode: true
+              register: conf_name
+              failed_when: (conf_name is changed) or (conf_name is failed)
+              loop: "{{ vlan_items }}"         
+              delegate_to: localhost
+              ignore_errors: true
+          rescue: 
+            - fail: 
+                msg: "{{inventory_hostname}}: no VLAN name {{ lookup('vars', 'VLAN_NAME_' + item) }} is found"
 
-        - name: Validation of VLAN Tag
-          ansible.builtin.lineinfile: 
-            path: "/tmp/{{ inventory_hostname }}.txt"
-            line: "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item) }} tag {{ lookup('vars', 'TAG_ID_' + item) }}"
-            state: present
-          check_mode: true
-          register: conf_tag  
-          failed_when: (conf_tag is changed) or (conf_tag is failed)
-          loop: "{{ vlan_items }}"
-          delegate_to: localhost
+        - name: Validation of VLAN Tag              
+          block: 
+            - name: Validation of VLAN Tag
+              ansible.builtin.lineinfile: 
+                path: "/tmp/{{ inventory_hostname }}.txt"
+                line: "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item) }} tag {{ lookup('vars', 'TAG_ID_' + item) }}"
+                state: present
+              check_mode: true
+              register: conf_tag  
+              failed_when: (conf_tag is changed) or (conf_tag is failed)
+              loop: "{{ vlan_items }}"
+              delegate_to: localhost
+              ignore_errors: true
+          rescue: 
+            - fail: 
+                msg: "{{inventory_hostname}}: no tag {{ lookup('vars', 'TAG_ID_' + item) }} is added to VLAN {{ lookup('vars', 'VLAN_NAME_' + item) }}"
 
-        - name: Display debug message
-          ansible.builtin.debug: 
-            msg: "{{ conf_tag }}"
+        - name: Validation of Port assignment with tagged or untagged
+          block:
+            - name: Validation of Port assignment with tagged or untagged
+              ansible.builtin.lineinfile: 
+                path: "/tmp/{{ inventory_hostname }}.txt"
+                line: "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item) }} add ports {{ lookup('vars', 'PORT_NUM_' + item) }} {{ lookup('vars', 'TAGGED_' + item) }}"
+                state: present
+              check_mode: true
+              register: conf_tag  - name: Validation of Port assignment with tagged or untagged
+              failed_when: (conf_tag is changed) or (conf_tag is failed)
+              loop: "{{ vlan_items }}"
+              delegate_to: localhost
+              ignore_errors: true
+              when: lookup('vars', 'PORT_NUM_' + item, default='') != '' and lookup('vars', 'TAGGED_' + item, default='') != ''
+              ignore_errors: true
+          rescue: 
+            - fail: 
+                msg: "{{inventory_hostname}}: fails to validate Port {{ lookup('vars', 'PORT_NUM_' + item) }} {{ lookup('vars', 'TAGGED_' + item) }}"
