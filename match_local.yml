@@ -25,16 +25,28 @@
           delegate_to: localhost
           become: false
 
-        - name: String Found
+        - name: Validation of VLAN Name 
           ansible.builtin.lineinfile: 
             path: "/tmp/{{ inventory_hostname }}.txt"
-            line: "create vlan {{VLAN_NAME_1}}"
+            line: "create vlan {{ lookup('vars', 'VLAN_NAME_' + item) }}"
             state: present
           check_mode: true
-          register: conf  
-          failed_when: (conf is changed) or (conf is failed)
+          register: conf_name
+          failed_when: (conf_name is changed) or (conf_name is failed)
           loop: "{{ vlan_items }}"
+          delegate_to: localhost
+
+        - name: Validation of VLAN Tag
+          ansible.builtin.lineinfile: 
+            path: "/tmp/{{ inventory_hostname }}.txt"
+            line: "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item) }} tag {{ lookup('vars', 'TAG_ID_' + item) }}"
+            state: present
+          check_mode: true
+          register: conf_tag  
+          failed_when: (conf_tag is changed) or (conf_tag is failed)
+          loop: "{{ vlan_items }}"
+          delegate_to: localhost
 
         - name: Display debug message
           ansible.builtin.debug: 
-            msg: "{{ conf }}"
+            msg: "{{ conf_tag }}"
