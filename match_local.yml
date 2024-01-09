@@ -65,15 +65,12 @@
             - name: Validation of Port assignment with tagged or untagged
               ansible.builtin.lineinfile: 
                 path: "/tmp/{{ inventory_hostname }}.txt"
-                line: "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item) }} add ports {{ lookup('vars', 'PORT_NUM_' + item) }} {{ lookup('vars', 'TAGGED_' + item) }}"
+                line: "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item)}} add ports {{lookup('vars', 'PORT_NUM_' + item)}} {{ lookup('vars', 'TAGGED_' + item) }}"
                 state: present
               check_mode: true
               register: conf_port
               failed_when: (conf_port is changed) or (conf_port is failed)
               loop: "{{ vlan_items }}"
               delegate_to: localhost
-              when: lookup('vars', 'PORT_NUM_' + item, default='') != '' 
               ignore_errors: true       
-          rescue: 
-            - fail: 
-                msg: "{{inventory_hostname}}: fails to validate Port {{ lookup('vars', 'PORT_NUM_' + item) }} {{ lookup('vars', 'TAGGED_' + item) }}"
+ 
