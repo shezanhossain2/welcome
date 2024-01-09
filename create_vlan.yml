@@ -18,6 +18,7 @@
                 - "create vlan {{ lookup('vars', 'VLAN_NAME_' + item) }}"
           loop: "{{ vlan_items }}"
           ignore_errors: True
+          check_mode: True
 
 
          
