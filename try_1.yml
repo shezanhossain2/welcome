@@ -31,7 +31,7 @@
             - name: Validation of Port assignment with tagged or untagged
               ansible.builtin.lineinfile: 
                 path: "/tmp/{{ inventory_hostname }}.txt"
-                line: "configure vlan IT add ports 2 tagged"
+                line: "configure vlan IT add ports"
                 state: present
               check_mode: true
               delegate_to: localhost
