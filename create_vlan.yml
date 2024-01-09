@@ -14,11 +14,9 @@
       block:
         - name: Create VLAN name 
           community.network.exos_config:
-            lines: 
-                - "create vlan {{ lookup('vars', 'VLAN_NAME_' + item) }}"
-          loop: "{{ vlan_items }}"
-          ignore_errors: True
-          check_mode: True
+            diff_against: intended
+            intended_config: 
+              - "create vlan {{ lookup('vars', 'VLAN_NAME_' + item) }}"
 
 
          
