@@ -28,7 +28,7 @@
         - name: Validation of VLAN Name 
           ansible.builtin.lineinfile: 
             path: "/tmp/{{ inventory_hostname }}.txt"
-            line: "create vlan {{ lookup('vars', 'VLAN_NAME_' + item) }}"
+            line: "create vlan \"{{ lookup('vars', 'VLAN_NAME_' + item) }}\""
             state: present
           check_mode: true
           register: conf_name
