@@ -24,17 +24,15 @@
             dest: "/tmp/{{ inventory_hostname }}.txt"
           delegate_to: localhost
           become: false
-
-
-        - name: Validation of Port assignment with tagged or untagged
-          block:
-            - name: Validation of Port assignment with tagged or untagged
-              ansible.builtin.lineinfile: 
-                path: "/tmp/{{ inventory_hostname }}.txt"
-                line: "configure vlan IT add ports 2 tagged"
-                state: present
-              check_mode: true
-              delegate_to: localhost
-              register: conf_port
-              failed_when: (conf_port is changed) or (conf_port is failed)
-              ignore_errors: true       
+          
+        - name: Manage VLAN configuration block
+          ansible.builtin.blockinfile:
+            path: "/tmp/{{ inventory_hostname }}.txt"
+            block: |
+              configure vlan IT add ports 2 tagged
+            marker: "# {mark} ANSIBLE MANAGED BLOCK"
+            state: present
+          check_mode: true
+          delegate_to: localhost
+          register: conf_vlan_block
+          failed_when: (conf_vlan_block is changed) or (conf_vlan_block is failed)
