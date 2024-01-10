@@ -25,14 +25,13 @@
           delegate_to: localhost
           become: false
 
-        - name: Check whether /tmp/my.conf contains "127.0.0.1"
-          command: grep -Fxq "configure vlan IT add ports 2 tagged" /tmp/{{ inventory_hostname }}.txt
-          register: checkmyconf
-          check_mode: no
-          ignore_errors: yes
-          changed_when: no
-
-
-        - name: Greet the world if /tmp/my.conf contains "127.0.0.1"
-          debug: msg="Hello, world!"
-          when: checkmyconf.rc == 0
+        - name: Validation of VLAN Name
+          block: 
+            - name: Validation of VLAN Name
+              shell: grep "create vlan \"{{ lookup('vars', 'VLAN_NAME_' + item) }}\"" "/tmp/{{ inventory_hostname }}.txt"
+              register: conf_name
+              changed_when: result.rc != 0
+              failed_when: False
+              loop: "{{ vlan_items }}"         
+              delegate_to: localhost
+              ignore_errors: true
