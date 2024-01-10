@@ -35,6 +35,15 @@
               delegate_to: localhost
               loop: "{{ vlan_items }}"
 
+            - name: Validation of VLAN tag
+              shell: grep "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item) }} tag {{ lookup('vars', 'TAG_ID_' + item) }}" "/tmp/{{ inventory_hostname }}.txt"
+              register: conf_tag
+              changed_when: conf_tag.rc != 0
+              failed_when: False
+              delegate_to: localhost
+              loop: "{{ vlan_items }}" 
+
+
             - name: Validation of VLAN Port add and tagged/untagged
               shell: grep "configure vlan IT add ports 2 tagged" "/tmp/{{ inventory_hostname }}.txt"
               register: conf_tag
