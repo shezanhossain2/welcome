@@ -49,4 +49,5 @@
               register: conf_tag
               changed_when: conf_tag.rc != 0
               failed_when: False
-              delegate_to: localhost           
+              delegate_to: localhost   
+              loop: "{{ vlan_items }}"         
