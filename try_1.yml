@@ -45,7 +45,7 @@
 
 
             - name: Validation of VLAN Port add and tagged/untagged
-              shell: grep "configure vlan IT add ports 2 tagged" "/tmp/{{ inventory_hostname }}.txt"
+              shell: grep "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item) }} add ports {{ lookup('vars', 'PORT_NUM_' + item) }} {{ lookup('vars', 'TAGGED_' + item) }}" "/tmp/{{ inventory_hostname }}.txt"
               register: conf_tag
               changed_when: conf_tag.rc != 0
               failed_when: False
