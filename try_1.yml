@@ -28,7 +28,7 @@
         - name: Validation of VLAN Name
           block: 
             - name: Validation of VLAN Name
-              shell: grep "create vlan \"{{ lookup('vars', 'VLAN_NAME_' + item) }}\"" "/tmp/{{ inventory_hostname }}.txt"
+              shell: grep "create vlan" "/tmp/{{ inventory_hostname }}.txt"
               register: conf_name
               changed_when: result.rc != 0
               failed_when: False
