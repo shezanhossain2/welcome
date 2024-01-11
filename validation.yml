@@ -1,0 +1,55 @@
+---
+- name: Generate
+  hosts: sw
+  connection: network_cli
+  gather_facts: false
+  
+  collections:
+    - community.network
+
+
+  tasks:
+    - name: Match config
+      vars:
+        vlan_items: "{{ range(1, num_vlans + 1) | map('string') | list }}"
+      block:
+        - name: Show config
+          community.network.exos_command:
+            commands: show config
+          register: config
+
+        - name: SAVE OUTPUT TO ./backups/
+          copy:
+            content: "{{ config.stdout[0] }}"
+            dest: "/tmp/{{ inventory_hostname }}.txt"
+          delegate_to: localhost
+          become: false
+
+        - name: Validation of VLAN Name
+          block: 
+            - name: Validation of VLAN Name
+              shell: grep "create vlan \"{{ lookup('vars', 'VLAN_NAME_' + item) }}\"" "/tmp/{{ inventory_hostname }}.txt"
+              register: conf_name
+              changed_when: conf_name.rc != 0
+              failed_when: False
+              delegate_to: localhost
+              loop: "{{ vlan_items }}"
+              when: lookup('vars', 'VLAN_NAME_' + item, default='') != ''
+
+            - name: Validation of VLAN tag
+              shell: grep "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item) }} tag {{ lookup('vars', 'TAG_ID_' + item) }}" "/tmp/{{ inventory_hostname }}.txt"
+              register: conf_tag
+              changed_when: conf_tag.rc != 0
+              failed_when: False
+              delegate_to: localhost
+              loop: "{{ vlan_items }}" 
+              when: lookup('vars', 'TAG_ID_' + item, default='') != ''
+
+            - name: Validation of VLAN Port add and tagged/untagged
+              shell: grep "configure vlan {{ lookup('vars', 'VLAN_NAME_' + item) }} add ports {{ lookup('vars', 'PORT_NUM_' + item) }} {{ lookup('vars', 'TAGGED_' + item) }}" "/tmp/{{ inventory_hostname }}.txt"
+              register: conf_tag
+              changed_when: conf_tag.rc != 0
+              failed_when: False
+              delegate_to: localhost   
+              loop: "{{ vlan_items }}"         
+              when: (lookup('vars', 'PORT_NUM_' + item, default='') != '') and (lookup('vars', 'TAGGED_' + item, default='') != '')
