@@ -1,19 +1,10 @@
 ---
-- name: Retrieve extra_vars from AWX job
-  hosts: localhost  # Or specify your target hosts here2
-  gather_facts: false
-  tasks:
-    - name: Get job details from AWX
-      uri:
-        url: "http://localhost:30080/api/v2/jobs/{{ job_id }}/"
-        method: GET
-        user: "admin"
-        password: "1234"
-        headers:
-          Content-Type: "application/json"
-        validate_certs: no  # Change this to yes if your AWX instance has valid SSL certificates
-      register: job_details
+- name: ansible-vault test playbook
+  hosts: all
+  vars_files:
+   - secrect2.yml
 
-    - name: Display extra_vars
-      debug:
-        var: job_details.json.extra_vars
+tasks:
+    - name: show vault encrypted variables
+      debug: 
+        msg: "{{user_name}} and {{token_key}}"
