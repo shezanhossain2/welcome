@@ -1,12 +1,15 @@
 ---
-- name: ansible-vault test playbook
-  hosts: all
-  vars_files:
-    - /var/lib/awx/projects/secrect2.yml
+- name: Determine directory for secret2.yml file
+  hosts: localhost
+  gather_facts: false
 
   tasks:
-    - name: show vault encrypted variables
-      debug: 
-        msg: "{{ user_name }} and {{ token_key }}"
+    - name: Get current working directory
+      shell: pwd
+      register: current_directory
       delegate_to: localhost
       become: false
+
+    - name: Display directory for secret2.yml
+      debug:
+        msg: "Place secret2.yml in directory: {{ current_directory.stdout }}"
