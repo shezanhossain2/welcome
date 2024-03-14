@@ -2,7 +2,7 @@
 - name: ansible-vault test playbook
   hosts: all
   vars_files:
-    - secret2.yml
+    - secret4.yml
 
   tasks:
     - name: show vault encrypted variables
