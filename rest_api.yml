@@ -1,9 +1,10 @@
 ---
 - name: ansible-vault test playbook
   hosts: all
-  vars_files: secrect2.yml
+  vars_files:
+    - secret2.yml
 
   tasks:
     - name: show vault encrypted variables
       debug: 
-        msg: "{{user_name}} and {{token_key}}"
+        msg: "{{ user_name }} and {{ token_key }}"
