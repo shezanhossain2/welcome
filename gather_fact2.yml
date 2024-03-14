@@ -3,6 +3,8 @@
   hosts: sw
   connection: network_cli
   gather_facts: false
+  vars_files:
+    - secrect2.yml
   
   collections:
     - community.network
