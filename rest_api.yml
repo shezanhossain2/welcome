@@ -8,3 +8,5 @@
     - name: show vault encrypted variables
       debug: 
         msg: "{{ user_name }} and {{ token_key }}"
+      delegate_to: localhost
+      become: false
