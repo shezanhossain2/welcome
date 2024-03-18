@@ -24,6 +24,7 @@
             dest: "/tmp/{{ inventory_hostname }}.txt"
           delegate_to: localhost
           become: false
+          changed_when: false
 
         - name: Validation of VLAN Name
           block: 
